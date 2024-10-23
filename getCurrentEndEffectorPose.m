@@ -1,4 +1,4 @@
-function Transform = getCurrentEndEffectorPose(rossubscriber)
+function [currentEndEffectorPosition, currentEulerAngles] = getCurrentEndEffectorPose(rossubscriber)
     endEffectorPoseSubscriber = rossubscriber('/dobot_magician/end_effector_poses'); % Create a ROS Subscriber to the topic end_effector_poses
     pause(2); %Allow some time for MATLAB to start the subscriber
     currentEndEffectorPoseMsg = endEffectorPoseSubscriber.LatestMessage;
@@ -12,6 +12,5 @@ function Transform = getCurrentEndEffectorPose(rossubscriber)
                               currentEndEffectorPoseMsg.Pose.Orientation.Y,
                               currentEndEffectorPoseMsg.Pose.Orientation.Z];
     % Convert from quaternion to euler
-    [roll,pitch,yaw] = quat2eul(currentEndEffectorQuat);
-    Transform = transl(currentEndEffectorPosition) * trotx(roll) * troty(pitch) * trotz(yaw);
+    currentEulerAngles = quat2eul(currentEndEffectorQuat);
 end

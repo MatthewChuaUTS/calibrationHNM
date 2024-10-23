@@ -1,7 +1,7 @@
 function VisualServoing(cam)
     % Define the control gain and time step
     Lambda = 0.18;
-    dt = 0.2;  % Time step (seconds) (Decrease value to increase the fidelity of the servoing alg)
+    dt = 0.2;  % Time step (seconds)
     tolerance = 1e-3;  % Error tolerance
     
     % We need to calculate these
@@ -17,7 +17,7 @@ function VisualServoing(cam)
         % feature algorithms, I think we can specify how many of the most 
         % important features we want. This may be important as different 
         % nubmers of features might be found
-
+        
         Obsxy = (current_features - principal_point) ./ focal_length;
         e2 = Obsxy - xy;
         e = reshape(e2', [], 1);
@@ -42,7 +42,7 @@ function VisualServoing(cam)
         delta_Xc = Vc * dt;
     
         % Step 5: Update End-Effector Pose
-        % Get current pose
+        % Get current pose --
         [currentPosition, currentEulerAngles] = getCurrentEndEffectorPose();
         currentRotationMatrix = eul2rotm(currentEulerAngles, 'XYZ');
         T_current = [currentRotationMatrix, currentPosition'; 0 0 0 1];
