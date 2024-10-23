@@ -1,31 +1,62 @@
 function VisualServoing(cam, basePosImg)
+    % VISUALSERVOING Performs visual servoing using matched SURF features.
+    %
+    % Inputs:
+    %   cam        - Camera object used to capture images.
+    %   basePosImg - Reference image for the desired features.
+    
     % Define the control gain and time step
     Lambda = 0.18;
-    dt = 0.2;  % Time step (seconds) (Decrease value to increase the fidelity of the servoing alg)
-    tolerance = 1e-3;  % Error tolerance
+    dt = 0.2;         % Time step (seconds)
+    tolerance = 1e-3; % Error tolerance
     
-    % We need to calculate these
+    % Camera intrinsic parameters (adjust these to match your camera)
     principalPoint = [932, 542]; 
     focalLength = [985, 978];
+    
+    % Estimated depth of features (Z-coordinate)
     Z = 1.2;
+    
+    % Extract Desired Features
+    % Detect SURF features in the reference image
     desiredFeatures = detectSURFFeatures(basePosImg);
-    desiredFeatures = desiredFeatures.Location;
-
-
-
-
-    xy = (desiredFeatures - principalPoint) ./ focalLength;
+    
+    % Extract features (descriptors) from the base image
+    [desiredFeaturesExtracted, desiredValidPoints] = extractFeatures(basePosImg, desiredFeatures);
+    
+    % Main Control Loop
     while true
-        % Step 1: Get Current Features and Compute Error
+        % Get Current Features and Compute Error
+        % Capture current image from the camera
         currentImg = snapshot(cam);
-        currentFeatures = detectSURFFeatures(currentImg); % in one of the 
-        currentFeatures = currentFeatures.Location;
-
-        % feature algorithms, I think we can specify how many of the most 
-        % important features we want. This may be important as different 
-        % nubmers of features might be found
-
-        Obsxy = (currentFeatures - principalPoint) ./ focalLength;
+        
+        % Detect SURF features in the current image
+        currentFeatures = detectSURFFeatures(currentImg);
+        
+        % Extract features (descriptors) from the current image
+        [currentFeaturesExtracted, currentValidPoints] = extractFeatures(currentImg, currentFeatures);
+        
+        % Match features between the base image and the current image
+        indexPairs = matchFeatures(desiredFeaturesExtracted, currentFeaturesExtracted);
+        
+        % Retrieve the matched points
+        matchedDesiredPoints = desiredValidPoints(indexPairs(:,1));
+        matchedCurrentPoints = currentValidPoints(indexPairs(:,2));
+        
+        % Update 'n' to the number of matched features
+        n = size(matchedDesiredPoints, 1);
+        
+        % Check if any features were matched
+        if n == 0
+            disp('No matched features found. Exiting control loop.');
+            break;
+        end
+        
+        % Normalize the matched feature coordinates
+        xy = (matchedDesiredPoints.Location - principalPoint) ./ focalLength;
+        Obsxy = (matchedCurrentPoints.Location - principalPoint) ./ focalLength;
+        
+        % Compute the error between current and desired features
         e2 = Obsxy - xy;
         e = reshape(e2', [], 1);
         
@@ -34,45 +65,42 @@ function VisualServoing(cam, basePosImg)
             disp('Error is within tolerance. Exiting control loop.');
             break;
         end
-    
-        % Step 2: Compute Interaction Matrix Lx
-        Lx = [];
-        n = length(desiredFeatures(:, 1));
+        
+        % Compute Interaction Matrix Lx
+        Lx = zeros(2*n, 6); % Preallocate Lx for efficiency
         for i = 1:n
             Lxi = FuncLx(Obsxy(i, 1), Obsxy(i, 2), Z);
-            Lx = [Lx; Lxi]; % idk how big the interaction matrix is, unlucky, 
-            % its gonna keep increasing cuz I can't be stuffed to 
-            % initialise it with the correct size
+            Lx(2*i-1:2*i, :) = Lxi;
         end
-    
-        % Step 3: Compute Camera Velocity Vc
+        
+        % Compute Camera Velocity Vc
         Vc = -Lambda * pinv(Lx) * e;
-    
-        % Step 4: Integrate Vc to Get Displacement
+        
+        %Integrate Vc to Get Displacement
         delta_Xc = Vc * dt;
-    
-        % Step 5: Update End-Effector Pose
+        
+        % Update End-Effector Pose
         % Get current pose
         [currentPosition, currentEulerAngles] = getCurrentEndEffectorPose();
         currentRotationMatrix = eul2rotm(currentEulerAngles, 'XYZ');
         T_current = [currentRotationMatrix, currentPosition'; 0 0 0 1];
-    
+        
         % Compute incremental transformation
         delta_translation = delta_Xc(1:3);
         deltaEulerAngles = delta_Xc(4:6)';
         delta_rotation_matrix = eul2rotm(deltaEulerAngles, 'XYZ');
         T_delta = [delta_rotation_matrix, delta_translation; 0 0 0 1];
-    
+        
         % Compute new pose
         T_new = T_current * T_delta;
         newPosition = T_new(1:3, 4)';
         newRotationMatrix = T_new(1:3, 1:3);
         newEulerAngles = rotm2eul(newRotationMatrix, 'XYZ');
-    
-        % Step 6: Send New Pose to Robot
+        
+        % Send New Pose to Robot
         sendTargetEndEffectorPose(newPosition, newEulerAngles);
-    
-        % Step 7: Wait for Next Iteration
+        
+        % Wait for Next Iteration
         pause(dt);
     end
 end
