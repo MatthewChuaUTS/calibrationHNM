@@ -1,24 +1,31 @@
-function VisualServoing(cam)
+function VisualServoing(cam, basePosImg)
     % Define the control gain and time step
     Lambda = 0.18;
     dt = 0.2;  % Time step (seconds) (Decrease value to increase the fidelity of the servoing alg)
     tolerance = 1e-3;  % Error tolerance
     
     % We need to calculate these
-    principal_point = [932, 542]; 
-    focal_length = [985, 978];
+    principalPoint = [932, 542]; 
+    focalLength = [985, 978];
     Z = 1.2;
-    
-    
+    desiredFeatures = detectSURFFeatures(basePosImg);
+    desiredFeatures = desiredFeatures.Location;
+
+
+
+
+    xy = (desiredFeatures - principalPoint) ./ focalLength;
     while true
         % Step 1: Get Current Features and Compute Error
         currentImg = snapshot(cam);
-        current_features = detectSURFFeatures(currentImg); % in one of the 
+        currentFeatures = detectSURFFeatures(currentImg); % in one of the 
+        currentFeatures = currentFeatures.Location;
+
         % feature algorithms, I think we can specify how many of the most 
         % important features we want. This may be important as different 
         % nubmers of features might be found
 
-        Obsxy = (current_features - principal_point) ./ focal_length;
+        Obsxy = (currentFeatures - principalPoint) ./ focalLength;
         e2 = Obsxy - xy;
         e = reshape(e2', [], 1);
         
@@ -30,9 +37,12 @@ function VisualServoing(cam)
     
         % Step 2: Compute Interaction Matrix Lx
         Lx = [];
+        n = length(desiredFeatures(:, 1));
         for i = 1:n
             Lxi = FuncLx(Obsxy(i, 1), Obsxy(i, 2), Z);
-            Lx = [Lx; Lxi];
+            Lx = [Lx; Lxi]; % idk how big the interaction matrix is, unlucky, 
+            % its gonna keep increasing cuz I can't be stuffed to 
+            % initialise it with the correct size
         end
     
         % Step 3: Compute Camera Velocity Vc

@@ -1,4 +1,4 @@
 function basePosImg = GetBasePos(cam)
-    moveRobot(basePosition);
+    InitialiseDobot();
     basePosImg = snapshot(cam);
 end

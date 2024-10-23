@@ -22,6 +22,7 @@ function CalibrateDobotMagician(calibrationAmount, cam)
         position = moveArray(i, 1);  % Extract position
         rotation = moveArray(i, 2);  % Extract rotation
         sendTargetEndEffectorPose(position, rotation); % Pass position and rotation separately
+        pause(4); % pause until the robot has finished moving, we have to hardcode this
         img = snapshot(cam);
         imageArray(i) = img;
     end
