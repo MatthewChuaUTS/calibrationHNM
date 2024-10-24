@@ -1,4 +1,4 @@
-function sendTargetEndEffectorPose(endEffectorPosition, endEffectorRotation)
+function sendTargetEndEffectorPose(endEffectorPosition, endEffectorRotation)   
     [targetEndEffectorPub,targetEndEffectorMsg] = rospublisher('/dobot_magician/target_end_effector_pose');
     
     targetEndEffectorMsg.Position.X = endEffectorPosition(1);
