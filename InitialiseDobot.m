@@ -26,3 +26,4 @@ function InitialiseDobot()
     % Move to the next line after completion
     fprintf('\nInitialization complete.\n');
 end
+

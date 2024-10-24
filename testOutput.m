@@ -1,19 +1,77 @@
-for timeUntilCompletion = 10:-1:0
-    % Create the message to display
-    msg = sprintf('Time until initialization is complete: %d seconds', timeUntilCompletion);
-    
-    if timeUntilCompletion ~= 10
-        % Erase the previous message by printing backspaces
-        fprintf(repmat('\b', 1, prevMsgLength)); % YOOO THIS IS SO COOOL
-    end
+orientation = [
+    [-0.9999, 0, 0, 0.0120],
+    [-0.9990, 0, 0, 0.0443],
+    [0.9948, 0, 0, 0.1015],
+    [0.9995, 0, 0, 0.0326],
+    [0.9885, 0, 0, 0.1514],
+    [0.9999, 0, 0, 0.0127],
+    [0.9987, 0, 0, 0.0513],
+    [0.9997, 0, 0, 0.0261],
+    [0.9919, 0, 0, 0.1267],
+    [-0.9993, 0, 0, 0.0381],
+    [-0.9993, 0, 0, 0.0381]
+];
 
-    % Print the new message
-    fprintf('%s', msg);
-    
-    % Update the length of the message for the next iteration
-    prevMsgLength = length(msg);
-    
-    pause(1);
-end
-% Move to the next line after completion
-fprintf('\nInitialization complete.\n');
+pose = [
+    [0.2161, -0.0052, 0.0745],
+    [0.2002, -0.0178, 0.1260],
+    [0.2336, 0.0482, 0.0859],
+    [0.2649, 0.0173, 0.0825],
+    [0.2302, 0.0722, 0.1327],
+    [0.2429, 0.0062, 0.1268],
+    [0.2536, 0.0261, 0.0510],
+    [0.2594, 0.0136, 0.0609],
+    [0.2367, 0.0615, 0.0877],
+    [0.2422, -0.0185, 0.0823],
+    [0.2422, -0.0185, 0.0823]
+];
+
+newOrientation = [
+    [-0.0240, 0, 0],
+    [-0.0886, 0, 0],
+    [0.2034, 0, 0],
+    [0.0652, 0, 0],
+    [0.3040, 0, 0],
+    [0.0254, 0, 0],
+    [0.1026, 0, 0],
+    [0.0522, 0, 0],
+    [0.2541, 0, 0],
+    [-0.0762, 0, 0],
+    [-0.0762, 0, 0]
+];
+
+
+% newOrientation = [];
+% for i=1:length(orientation)
+%     [output] = quat2eul(orientation(i,:));
+%     newOrientation = [newOrientation; output];
+% end
+
+% sendTargetEndEffectorPose(pose(1,:), newOrientation(1,:));
+% 
+endEffectorPosition = [0.2422, -0.0185, 0.0823];
+endEffectorRotation = [-0.0762, 0, 0];
+sendTargetEndEffectorPose(endEffectorPosition, endEffectorRotation);
+
+
+% for i=1:length(newOrientation)
+%     sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
+%     input('press enter to move again');
+% end
+
+
+% PositionMatrix = []; 
+% OrientationMatrix = [];
+% maxSteps = 3;
+% 
+% for i = 1:maxSteps
+%     input('Please move the robot to a new position, and then press enter');
+% 
+%     % Get the current end-effector pose (position and quaternion).
+%     [currentEndEffectorPosition, currentEndEffectorQuat] = getCurrentEndEffectorPose();
+% 
+%     % Append the position and orientation as rows to their respective matrices.
+%     PositionMatrix = [PositionMatrix; currentEndEffectorPosition'];
+%     OrientationMatrix = [OrientationMatrix; currentEndEffectorQuat];
+%     disp('ok, I finished this one!');
+% end

@@ -1,4 +1,4 @@
-function [currentEndEffectorPosition, currentEulerAngles] = getCurrentEndEffectorPose(rossubscriber)
+function [currentEndEffectorPosition, currentEulerAngles] = getCurrentEndEffectorPose()
     endEffectorPoseSubscriber = rossubscriber('/dobot_magician/end_effector_poses'); % Create a ROS Subscriber to the topic end_effector_poses
     pause(2); %Allow some time for MATLAB to start the subscriber
     currentEndEffectorPoseMsg = endEffectorPoseSubscriber.LatestMessage;
@@ -10,7 +10,8 @@ function [currentEndEffectorPosition, currentEulerAngles] = getCurrentEndEffecto
     currentEndEffectorQuat = [currentEndEffectorPoseMsg.Pose.Orientation.W,
                               currentEndEffectorPoseMsg.Pose.Orientation.X,
                               currentEndEffectorPoseMsg.Pose.Orientation.Y,
-                              currentEndEffectorPoseMsg.Pose.Orientation.Z];
+                              currentEndEffectorPoseMsg.Pose.Orientation.Z]';
     % Convert from quaternion to euler
     currentEulerAngles = quat2eul(currentEndEffectorQuat);
 end
+
