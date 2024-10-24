@@ -23,8 +23,12 @@ function CalibrateDobotMagician(calibrationAmount, cam)
         rotation = moveArray(i, 2);  % Extract rotation
         sendTargetEndEffectorPose(position, rotation); % Pass position and rotation separately
         pause(4); % pause until the robot has finished moving, we have to hardcode this
-        img = snapshot(cam);
-        imageArray(i) = img;
+    img = snapshot(cam);  % Capture the image
+    imageFileName = sprintf('C:\\matlab\\Final Project\\Image%d.png', i);  % Create a unique filename
+    imwrite(img, imageFileName);  % Save the image to the specified path
+    
+    imageArray{i} = img;  % Store the image in the array if needed later
+    input('press enter to continue');
     end
 
     % use the images in imageArray and intrinsically and extrinsically 
