@@ -240,5 +240,5 @@ disp(T_BT); % Print the final transformation matrix
 % 
 % % Step 5: Release the webcam
 % clear cam;
-
+%plz work
 
