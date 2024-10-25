@@ -1,6 +1,6 @@
 %function CalibrateDobotMagician(calibrationAmount, cam)
-cam=webcam;
-calibrationAmount = 20;
+cam=we
+calibrationAmount = 20
     % imageArray = zeros((length(calibrationAmount) - 1));
 
     % teach the robot to different positions, save [xyz] [rpy] 10-20x
