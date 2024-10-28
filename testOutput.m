@@ -1,5 +1,18 @@
+listOfPositions = [];
+listOfRotations = [];
+timesWeWantToCalibrate = 10;
 
-
+for i=1:timesWeWantToCalibrate
+    disp('starting to get stuff');
+    [currentEndEffectorPosition, rotation] = getCurrentEndEffectorPose();
+    listOfPositions = [listOfPositions; currentEndEffectorPosition];
+    listOfRotations = [listOfRotations; rotation];
+    input('done, move the bot, then press enter');
+end
+disp('list of positions:')
+disp(listOfPositions);
+disp('list of rotations:')
+disp(listOfRotations);
 
 
 % pose = [
