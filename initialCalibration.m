@@ -1,4 +1,4 @@
-pose = [
+calibrationXYZ = [
     [0.2689   -0.0034    0.1164],
     [0.2672   -0.0167    0.0616],
     [0.2664    0.0030    0.0855],
@@ -11,7 +11,7 @@ pose = [
     [0.1851    0.0347    0.1661]
 ];
 
-newOrientation = [
+calibrationRPY = [
     [0.0624         0         0],
     [0.0125         0         0],
     [0.0860         0         0],
@@ -24,14 +24,16 @@ newOrientation = [
     [0.2602         0         0]
 ];
 
-% for i=1:length(robotPoses)
-%     sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
-%     pause(2);
-%     imageFileName = sprintf('C:\\Users\\mattk\\OneDrive - UTS\Uni\\Year 2\\SCMS\\calibrationHNM\\Image%d.png', i);  % Create a unique filename
-%     imwrite(img, imageFileName);  % Save the image to the specified path
-% end
-
-for i = 1:length(pose)       
-    sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
-    pause(5); % pause until the robot has finished moving, we have to hardcode this 
+for i=1:length(calibrationXYZ)
+    sendTargetEndEffectorPose(calibrationXYZ(i,:), calibrationRPY(i,:));
+    pause(2);
+    % imageFileName = sprintf('C:\\Users\\mattk\\OneDrive - UTS\Uni\\Year 2\\SCMS\\calibrationHNM\\Image%d.png', i);  % Create a unique filename
+    % imwrite(img, imageFileName);  % Save the image to the specified path
 end
+
+% for i = 1:length(calibrationXYZ)       
+%     sendTargetEndEffectorPose(calibrationXYZ(i,:), calibrationRPY(i,:));
+%     pause(3);
+%     disp('taking an image');
+%     pause(1); 
+% end
