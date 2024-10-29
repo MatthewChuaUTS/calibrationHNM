@@ -29,14 +29,15 @@ function CalibrateDobotMagician()
         [0.2602         0         0]
     ];
     
-    for i=1:length(fixedRobotPoses)
-        % sendTargetEndEffectorPose(calibrationXYZ(i,:), calibrationRPY(i,:));
-        % pause(3);
-        img = snapshot(cam);  % Capture the image
-        imageFileName = sprintf('C:\\Users\\mattk\\OneDrive - UTS\\Uni\\Year 2\\SCMS\\calibrationHNM\\Image%d.png', i);  % Create a unique filename
-        imwrite(img, imageFileName);  % Save the image to the specified path
-        input('press enter to continue');
-    end
+    % for i=1:length(fixedRobotPoses)
+    %     % sendTargetEndEffectorPose(calibrationXYZ(i,:), calibrationRPY(i,:));
+    %     % pause(3);
+    %     img = snapshot(cam);  % Capture the image
+    %     imageFileName = sprintf('C:\\Users\\mattk\\OneDrive - UTS\\Uni\\Year 2\\SCMS\\calibrationHNM\\Image%d.png', i);  % Create a unique filename
+    %     imwrite(img, imageFileName);  % Save the image to the specified pa
+    %     % th
+    %     input('press enter to continue');
+    % end
     
         imageFileNames = {'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image1.png',...
             'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image2.png',...
@@ -52,15 +53,15 @@ function CalibrateDobotMagician()
     
     % Detect calibration pattern in images
     detector = vision.calibration.monocular.CheckerboardDetector();
-    [imagePoints, imagesUsed] = detectPatternPoints(detector, imageFileNames, 'HighDistortion', true);
+    [imagePoints, imagesUsed] = detectPatternPoints(detector, imageFileNames, 'HighDistortion', false);
     imageFileNames = imageFileNames(imagesUsed);
     
     % Read the first image to obtain image size
-    originalImage = imread(imageFileNames{1});
+    originalImage = imread('C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image1.png');
     [mrows, ncols, ~] = size(originalImage);
     
     % Generate world coordinates for the planar pattern keypoints
-    squareSize = 35;  % in units of 'millimeters'
+    squareSize = 13;  % in units of 'millimeters'
     worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize);
     worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
     
@@ -88,7 +89,7 @@ function CalibrateDobotMagician()
     % showdemo('MeasuringPlanarObjectsExample')
     % showdemo('StructureFromMotionExample')
     
-    numImages = 5; % Number of images taken by the moving camera
+    numImages = 10; % Number of images taken by the moving camera
     movingCameraPoses = cell(1, numImages); % Preallocate a cell array
     
     for i = 1:numImages
