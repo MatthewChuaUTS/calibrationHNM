@@ -48,10 +48,10 @@ newOrientation = [
 % Joint states of the robot for calibration
 
 % Capture the images after moving the robot
-for i = 1:length(pose)       
-    sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
-    pause(5); % pause until the robot has finished moving, we have to hardcode this 
-end
+% for i = 1:length(pose)       
+%     sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
+%     pause(5); % pause until the robot has finished moving, we have to hardcode this 
+% end
 % 
 % 
 % 
@@ -59,23 +59,23 @@ end
 % % IF IT DOESNT WORK WRITR: rosshutdown
 % % % InitialiseDobot();
 % % 
-% % PositionMatrix = []; 
-% % OrientationMatrix = [];
-% % maxSteps = 5;
-% % 
-% % for i = 1:maxSteps
-% %     input('Please move the robot to a new position, and then press enter');
-% % 
-% %     % Get the current end-effector pose (position and quaternion).
-% %     [currentEndEffectorPosition, currentEndEffectorQuat] = getCurrentEndEffectorPose();
-% % 
-% %     % Append the position and orientation as rows to their respective matrices.
-% %     PositionMatrix = [PositionMatrix; currentEndEffectorPosition];
-% %     OrientationMatrix = [OrientationMatrix; currentEndEffectorQuat];
-% %     disp('ok, I finished this one!');
-% % end
-% % disp(PositionMatrix);
-% % disp(OrientationMatrix);
+PositionMatrix = []; 
+OrientationMatrix = [];
+maxSteps = 10;
+
+for i = 1:maxSteps
+    input('Please move the robot to a new position, and then press enter');
+
+    % Get the current end-effector pose (position and quaternion).
+    [currentEndEffectorPosition, currentEndEffectorQuat] = getCurrentEndEffectorPose();
+
+    % Append the position and orientation as rows to their respective matrices.
+    PositionMatrix = [PositionMatrix; currentEndEffectorPosition];
+    OrientationMatrix = [OrientationMatrix; currentEndEffectorQuat];
+    disp('ok, I finished this one!');
+end
+disp(PositionMatrix);
+disp(OrientationMatrix);
 % % input('press enter to move again');
 % % 
 % % for i=1:maxSteps

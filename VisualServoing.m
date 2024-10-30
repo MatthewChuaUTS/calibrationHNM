@@ -25,6 +25,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
     
     % Extract Desired Features
     % Detect SURF features in the reference image
+    basePosImg = rgb2gray(basePosImg);
     desiredFeatures = detectSURFFeatures(basePosImg);
     
     % Extract features (descriptors) from the base image
@@ -34,7 +35,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
     while true
         % Get Current Features and Compute Error
         % Capture current image from the camera
-        currentImg = snapshot(cam);
+        currentImg = rgb2gray(snapshot(cam));
         
         % Detect SURF features in the current image
         currentFeatures = detectSURFFeatures(currentImg);
@@ -98,7 +99,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
         T_delta = [delta_rotation_matrix, delta_translation; 0 0 0 1];
         
         % Compute new pose
-        T_new = T_current * T_delta * T_camera_endeffector;
+        T_new = T_current * T_delta; % * T_camera_endeffector *0.01
         newPosition = T_new(1:3, 4)';
         newRotationMatrix = T_new(1:3, 1:3);
         newEulerAngles = rotm2eul(newRotationMatrix, 'XYZ');
@@ -107,6 +108,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
         sendTargetEndEffectorPose(newPosition, newEulerAngles);
         
         % Wait for Next Iteration
-        pause(dt);
+        % pause(dt);
+        
     end
 end

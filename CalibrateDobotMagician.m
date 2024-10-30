@@ -100,11 +100,12 @@ function T_CE = CalibrateDobotMagician(cam)
     % For example, you can use the calibration data to remove effects of lens distortion.
     undistortedImage = undistortImage(originalImage, cameraParams);
     
-    % See additional examples of how to use the calibration data.  At the prompt type:
+    % See additional examples of how to use the calibration data.  At the
+    % prompt type: 
     % showdemo('MeasuringPlanarObjectsExample')
     % showdemo('StructureFromMotionExample')
     
-    numImages = 10; % Number of images taken by the moving camera
+    numImages = length(imageFileNames); % Number of images taken by the moving camera
     movingCameraPoses = cell(1, numImages); % Preallocate a cell array
     
     for i = 1:numImages

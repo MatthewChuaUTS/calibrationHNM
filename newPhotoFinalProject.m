@@ -1,28 +1,28 @@
-%function T_ce = newPhotoFinalProject()
+function T_CE = newPhotoFinalProject(cam)
     
-fixedRobotPoses = [0.2671    0.0179   -0.0118
-    0.2644    0.0394    0.0333
-    0.2502   -0.0190   -0.0005
-    0.2902    0.0144    0.0817
-    0.2267    0.0197    0.0832
-    0.2513   -0.0160    0.0110
-    0.2474    0.0365    0.0303
-    0.2503    0.0442    0.0764
-    0.2945    0.0250    0.0667
-    0.2740   -0.0590    0.0960]
-fixedRobotOrientatons = [0.0670         0         0
-    0.1478         0         0
-   -0.0758         0         0
-    0.0494         0         0
-    0.0869         0         0
-   -0.0638         0         0
-    0.1465         0         0
-    0.1746         0         0
-    0.0845         0         0
-   -0.2121         0         0]
+fixedRobotPoses = [0.1958   -0.0144    0.1640
+    0.1932   -0.0362    0.1645
+    0.1859   -0.0674    0.1567
+    0.1964   -0.0219    0.1568
+    0.1956    0.0200    0.1627
+    0.1981    0.0150    0.1491
+    0.1991   -0.0071    0.1434
+    0.1969   -0.0318    0.1358
+    0.1914   -0.0560    0.1338
+    0.1984   -0.0171    0.1470]
+fixedRobotOrientatons = [-0.0735         0         0
+   -0.1853         0         0
+   -0.3479         0         0
+   -0.1109         0         0
+    0.1021         0         0
+    0.0758         0         0
+   -0.0356         0         0
+   -0.1603         0         0
+   -0.2846         0         0
+   -0.0859         0         0]
 
 % Initialise Webcam
-cam = webcam;
+% cam = webcam;
 
 % Specify the path for saving images
 save_path = 'C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM\';
@@ -56,7 +56,7 @@ for i = 1:numImages
 end
 
 % Release the camera after capturing images
-clear cam;
+% clear cam;
 
 % Define images to process
 imageFileNames = cellstr(sprintfc('image%d.png', 1:numImages));
@@ -79,7 +79,7 @@ originalImage = imread('C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrati
 [mrows, ncols, ~] = size(originalImage);
 
 % Generate world coordinates for the planar pattern keypoints
-squareSize = 35;  % in units of 'millimeters'
+squareSize = 13;  % in units of 'millimeters'
 worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize, 'boardSize', [5 5]);
 worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
 
@@ -108,12 +108,15 @@ undistortedImage = undistortImage(originalImage, cameraParams);
 % showdemo('MeasuringPlanarObjectsExample')
 % showdemo('StructureFromMotionExample')
 
-numImages = 10; % Number of images taken by the moving camera
+numImages = length(imageFileNames); % Number of images taken by the moving camera
 movingCameraPoses = cell(1, numImages); % Preallocate a cell array
 
 for i = 1:numImages
     % Detect checkerboard in the i-th image
     [imagePoints, boardSize] = detectCheckerboardPoints(imageFileNames{i});
+    if size(imagePoints, 1) > size(worldPoints, 1)
+        imagePoints = imagePoints(1:size(worldPoints, 1), :);
+    end
 
     % Estimate pose using cameraParams from calibration
     [R, t] = estimateWorldCameraPose(imagePoints, worldPoints3D, cameraParams);
@@ -225,4 +228,4 @@ disp(T_CT_avg);
 T_BT = T_BC * T_CT_avg; % T_BT now represents the pose of the target in the base coordinate frame
 disp('T_BT:');
 disp(T_BT); % Print the final transformation matrix
-%end
+end
