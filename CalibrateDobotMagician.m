@@ -1,68 +1,82 @@
-function CalibrateDobotMagician()
-    cam=webcam;
-    % imageArray = zeros((length(calibrationAmount) - 1));
-
-    % teach the robot to different positions, save [xyz] [rpy] 10-20x
-    fixedRobotPoses = [
-    [0.2689   -0.0034    0.1164],
-    [0.2672   -0.0167    0.0616],
-    [0.2664    0.0030    0.0855],
-    [0.2805   -0.0246    0.0432],
-    [0.2463   -0.0804    0.0831],
-    [0.1870   -0.0002    0.1748],
-    [0.2957   -0.0001    0.1182],
-    [0.2437   -0.0092    0.0666],
-    [0.2348   -0.0701    0.0702],
-    [0.1851    0.0347    0.1661]
-    ];
+function CalibrateDobotMagician(cam)   
+    fixedRobotPoses = [0.2671    0.0179   -0.0118
+        0.2644    0.0394    0.0333
+        0.2502   -0.0190   -0.0005
+        0.2902    0.0144    0.0817
+        0.2267    0.0197    0.0832
+        0.2513   -0.0160    0.0110
+        0.2474    0.0365    0.0303
+        0.2503    0.0442    0.0764
+        0.2945    0.0250    0.0667
+        0.2740   -0.0590    0.0960]
+    fixedRobotOrientatons = [0.0670         0         0
+        0.1478         0         0
+       -0.0758         0         0
+        0.0494         0         0
+        0.0869         0         0
+       -0.0638         0         0
+        0.1465         0         0
+        0.1746         0         0
+        0.0845         0         0
+       -0.2121         0         0]
     
-    calibrationRPY = [
-        [0.0624         0         0],
-        [0.0125         0         0],
-        [0.0860         0         0],
-        [-0.0124         0         0],
-        [-0.2406         0         0],
-        [0.0740         0         0],
-        [0.0744         0         0],
-        [0.0370         0         0],
-        [-0.2152         0         0],
-        [0.2602         0         0]
-    ];
+    % Specify the path for saving images
+    save_path = 'C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM\';
     
-    % for i=1:length(fixedRobotPoses)
-    %     % sendTargetEndEffectorPose(calibrationXYZ(i,:), calibrationRPY(i,:));
-    %     % pause(3);
-    %     img = snapshot(cam);  % Capture the image
-    %     imageFileName = sprintf('C:\\Users\\mattk\\OneDrive - UTS\\Uni\\Year 2\\SCMS\\calibrationHNM\\Image%d.png', i);  % Create a unique filename
-    %     imwrite(img, imageFileName);  % Save the image to the specified pa
-    %     % th
-    %     input('press enter to continue');
-    % end
+    % Check if save_path exists
+    if ~isfolder(save_path)
+        error("Save path does not exist. Please check the path.");
+    end
     
-        imageFileNames = {'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image1.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image2.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image3.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image4.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image5.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image6.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image7.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image8.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image9.png',...
-            'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image10.png'...
-            };
+    % Capture and save images with sequential filenames
+    numImages = 10;
+    for i = 1:numImages
+        % Capture image
+        sendTargetEndEffectorPose(fixedRobotPoses(i,:), fixedRobotOrientatons(i,:));
+        img = snapshot(cam);
+        
+        pause(3);
+        % Check if the image was captured successfully
+        if isempty(img)
+            error("Image capture failed. Please check the camera setup.");
+        end
+        
+        % Define filename with path and sequence number
+        filename = sprintf('%simage%d.png', save_path, i);
+        
+        % Save the image
+        imwrite(img, filename);
+        
+        % Display a confirmation message
+        fprintf("Image saved as %s\n", filename);
+    end
+    
+    % Release the camera after capturing images
+    clear cam;
+    
+    % Define images to process
+    imageFileNames = cellstr(sprintfc('image%d.png', 1:numImages));
+    
+    % Check if imageFileNames is populated correctly
+    if isempty(imageFileNames)
+        error("No images found in the specified path. Check that images are saved correctly.");
+    else
+        disp('Image files detected:');
+        disp(imageFileNames);  % Display list of detected images for debugging
+    end
     
     % Detect calibration pattern in images
     detector = vision.calibration.monocular.CheckerboardDetector();
-    [imagePoints, imagesUsed] = detectPatternPoints(detector, imageFileNames, 'HighDistortion', false);
+    [imagePoints, imagesUsed] = detectPatternPoints(detector, imageFileNames, 'HighDistortion', true);
     imageFileNames = imageFileNames(imagesUsed);
     
     % Read the first image to obtain image size
-    originalImage = imread('C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\Image1.png');
+    originalImage = imread('C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM/image1.png');
     [mrows, ncols, ~] = size(originalImage);
     
     % Generate world coordinates for the planar pattern keypoints
-    squareSize = 13;  % in units of 'millimeters'
-    worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize);
+    squareSize = 35;  % in units of 'millimeters'
+    worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize, 'boardSize', [5 5]);
     worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
     
     
@@ -78,6 +92,7 @@ function CalibrateDobotMagician()
     
     % Visualize pattern locations
     h2=figure; showExtrinsics(cameraParams, 'CameraCentric');
+    h2=figure; showExtrinsics(cameraParams, 'PatternCentric');
     
     % Display parameter estimation errors
     displayErrors(estimationErrors, cameraParams);
@@ -206,4 +221,6 @@ function CalibrateDobotMagician()
     T_BT = T_BC * T_CT_avg; % T_BT now represents the pose of the target in the base coordinate frame
     disp('T_BT:');
     disp(T_BT); % Print the final transformation matrix
+
+end
 end

@@ -21,11 +21,10 @@
 
 %% ACTUAL CODE
 
-InitialiseRos(1);
+InitialiseRos(0);
 InitialiseDobot();
-
 cam = webcam;  % Connect to the default webcam
-basePosImg = GetBasePos();
+basePosImg = GetBasePos(cam);
 CalibrateDobotMagician(10, cam); %idk what I'm not actually passing out so yeah lol.
 input('ensure the command window has the safety stop function ready, then press enter');
 % virtual estop function -> WAIT_NO_NO_NO_STOP_THE_ROBOT();
