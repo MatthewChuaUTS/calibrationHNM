@@ -25,7 +25,7 @@ fixedRobotOrientatons = [0.0670         0         0
 cam = webcam;
 
 % Specify the path for saving images
-save_path = 'C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM';
+save_path = 'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM';
 
 % Check if save_path exists
 if ~isfolder(save_path)
@@ -74,7 +74,7 @@ detector = vision.calibration.monocular.CheckerboardDetector();
 imageFileNames = imageFileNames(imagesUsed);
 
 % Read the first image to obtain image size
-originalImage = imread('C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM/image1.png');
+originalImage = imread('C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNMimage1.png');
 [mrows, ncols, ~] = size(originalImage);
 
 % Generate world coordinates for the planar pattern keypoints

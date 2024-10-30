@@ -1,6 +1,6 @@
 %% PROJECT CHECKLIST
 
-% - [ ] test initialising ROS
+% - [X] test initialising ROS
 % - [ ] test GetBasePos
 % - [ ] add calibration code
 % - [ ] manually record calibration endeffector positions

@@ -1,4 +1,4 @@
-function VisualServoing(cam, basePosImg)
+function VisualServoing(cam, basePosImg, T_camera_endeffector)
     % VISUALSERVOING Performs visual servoing using matched SURF features.
     %
     % Inputs:
@@ -11,8 +11,14 @@ function VisualServoing(cam, basePosImg)
     tolerance = 1e-3; % Error tolerance
     
     % Camera intrinsic parameters (adjust these to match your camera)
-    principalPoint = [932, 542]; 
-    focalLength = [985, 978];
+    imageWidth = 1280;
+    imageHeight = 720; %#ok<NASGU>
+    principalPoint = [960, 540]; 
+
+    % Field of view in radians (using horizontal FOV)
+    fovRadians = 69.4 * (pi / 180);
+    focalLengthPixels = (imageWidth / 2) / tan(fovRadians / 2);
+    focalLength = [focalLengthPixels, focalLengthPixels];
     
     % Estimated depth of features (Z-coordinate)
     Z = 1.2;
@@ -92,7 +98,7 @@ function VisualServoing(cam, basePosImg)
         T_delta = [delta_rotation_matrix, delta_translation; 0 0 0 1];
         
         % Compute new pose
-        T_new = T_current * T_delta;
+        T_new = T_current * T_delta * T_camera_endeffector;
         newPosition = T_new(1:3, 4)';
         newRotationMatrix = T_new(1:3, 1:3);
         newEulerAngles = rotm2eul(newRotationMatrix, 'XYZ');
