@@ -1,4 +1,4 @@
-function CalibrateDobotMagician(cam)   
+function T_CE = CalibrateDobotMagician(cam)   
     fixedRobotPoses = [0.2671    0.0179   -0.0118
         0.2644    0.0394    0.0333
         0.2502   -0.0190   -0.0005
@@ -8,7 +8,7 @@ function CalibrateDobotMagician(cam)
         0.2474    0.0365    0.0303
         0.2503    0.0442    0.0764
         0.2945    0.0250    0.0667
-        0.2740   -0.0590    0.0960]
+        0.2740   -0.0590    0.0960];
     fixedRobotOrientatons = [0.0670         0         0
         0.1478         0         0
        -0.0758         0         0
@@ -18,7 +18,7 @@ function CalibrateDobotMagician(cam)
         0.1465         0         0
         0.1746         0         0
         0.0845         0         0
-       -0.2121         0         0]
+       -0.2121         0         0];
     
     % Specify the path for saving images
     save_path = 'C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM\';
@@ -221,6 +221,4 @@ function CalibrateDobotMagician(cam)
     T_BT = T_BC * T_CT_avg; % T_BT now represents the pose of the target in the base coordinate frame
     disp('T_BT:');
     disp(T_BT); % Print the final transformation matrix
-
-end
 end
