@@ -25,6 +25,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
     
     % Extract Desired Features
     % Detect SURF features in the reference image
+    basePosImg = rgb2gray(basePosImg);
     desiredFeatures = detectSURFFeatures(basePosImg);
     
     % Extract features (descriptors) from the base image
@@ -34,7 +35,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
     while true
         % Get Current Features and Compute Error
         % Capture current image from the camera
-        currentImg = snapshot(cam);
+        currentImg = rgb2gray(snapshot(cam));
         
         % Detect SURF features in the current image
         currentFeatures = detectSURFFeatures(currentImg);

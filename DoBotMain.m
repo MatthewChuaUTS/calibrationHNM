@@ -25,9 +25,10 @@
 % InitialiseDobot();
 % input("press enter once finished calibrating");
 cam = webcam;  % Connect to the default webcam
-t_ce = CalibrateDobotMagician(cam); %idk what I'm not actually passing out so yeah lol.
+t_ce = newPhotoFinalProject(cam); %idk what I'm not actually passing out so yeah lol.
 basePosImg = GetBasePos(cam);
-input('ensure the command window has the safety stop function ready, then press enter');
+disp("pausing for a bit");
+pause(5);
 % virtual estop function -> WAIT_NO_NO_NO_STOP_THE_ROBOT();
 VisualServoing(cam, basePosImg, t_ce);
 
