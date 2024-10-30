@@ -1,57 +1,57 @@
-% listOfPositions = [];
-% listOfRotations = [];
-% timesWeWantToCalibrate = 10;
+listOfPositions = [];
+listOfRotations = [];
+timesWeWantToCalibrate = 10;
+
+for i=1:timesWeWantToCalibrate
+    disp('starting to get stuff');
+    [currentEndEffectorPosition, rotation] = getCurrentEndEffectorPose();
+    listOfPositions = [listOfPositions; currentEndEffectorPosition];
+    listOfRotations = [listOfRotations; rotation];
+    input('done, move the bot, then press enter');
+end
+disp('list of positions:')
+disp(listOfPositions);
+disp('list of rotations:')
+disp(listOfRotations);
+
+
+% pose = [
+%     [0.2161, -0.0052, 0.0745],
+%     [0.2002, -0.0178, 0.1260],
+%     [0.2336, 0.0482, 0.0859],
+%     [0.2649, 0.0173, 0.0825],
+%     [0.2302, 0.0722, 0.1327],
+%     [0.2429, 0.0062, 0.1268],
+%     [0.2536, 0.0261, 0.0510],
+%     [0.2594, 0.0136, 0.0609],
+%     [0.2367, 0.0615, 0.0877],
+%     [0.2422, -0.0185, 0.0823],
+%     [0.2422, -0.0185, 0.0823]
+% ];
 % 
-% for i=1:timesWeWantToCalibrate
-%     disp('starting to get stuff');
-%     [currentEndEffectorPosition, rotation] = getCurrentEndEffectorPose();
-%     listOfPositions = [listOfPositions; currentEndEffectorPosition];
-%     listOfRotations = [listOfRotations; rotation];
-%     input('done, move the bot, then press enter');
-% end
-% disp('list of positions:')
-% disp(listOfPositions);
-% disp('list of rotations:')
-% disp(listOfRotations);
-
-
-pose = [
-    [0.2161, -0.0052, 0.0745],
-    [0.2002, -0.0178, 0.1260],
-    [0.2336, 0.0482, 0.0859],
-    [0.2649, 0.0173, 0.0825],
-    [0.2302, 0.0722, 0.1327],
-    [0.2429, 0.0062, 0.1268],
-    [0.2536, 0.0261, 0.0510],
-    [0.2594, 0.0136, 0.0609],
-    [0.2367, 0.0615, 0.0877],
-    [0.2422, -0.0185, 0.0823],
-    [0.2422, -0.0185, 0.0823]
-];
-
-newOrientation = [
-    [-0.0240, 0, 0],
-    [-0.0886, 0, 0],
-    [0.2034, 0, 0],
-    [0.0652, 0, 0],
-    [0.3040, 0, 0],
-    [0.0254, 0, 0],
-    [0.1026, 0, 0],
-    [0.0522, 0, 0],
-    [0.2541, 0, 0],
-    [-0.0762, 0, 0],
-    [-0.0762, 0, 0]
-];
+% newOrientation = [
+%     [-0.0240, 0, 0],
+%     [-0.0886, 0, 0],
+%     [0.2034, 0, 0],
+%     [0.0652, 0, 0],
+%     [0.3040, 0, 0],
+%     [0.0254, 0, 0],
+%     [0.1026, 0, 0],
+%     [0.0522, 0, 0],
+%     [0.2541, 0, 0],
+%     [-0.0762, 0, 0],
+%     [-0.0762, 0, 0]
+% ];
 
 
 
 % Joint states of the robot for calibration
 
 % Capture the images after moving the robot
-for i = 1:length(pose)       
-    sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
-    pause(5); % pause until the robot has finished moving, we have to hardcode this 
-end
+% for i = 1:length(pose)       
+%     sendTargetEndEffectorPose(pose(i,:), newOrientation(i,:));
+%     pause(5); % pause until the robot has finished moving, we have to hardcode this 
+% end
 % 
 % 
 % 
