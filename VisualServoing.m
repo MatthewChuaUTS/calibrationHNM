@@ -109,6 +109,6 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
         
         % Wait for Next Iteration
         % pause(dt);
-        
+        input('press enter for next step');
     end
 end
