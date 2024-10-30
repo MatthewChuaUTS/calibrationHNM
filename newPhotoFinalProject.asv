@@ -78,8 +78,8 @@ originalImage = imread('C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrati
 [mrows, ncols, ~] = size(originalImage);
 
 % Generate world coordinates for the planar pattern keypoints
-squareSize = 5;  % in units of 'millimeters'
-worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize, 'BoardSize', [7 9]);
+squareSize = 13;  % in units of 'millimeters'
+worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize);
 worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
 
 
