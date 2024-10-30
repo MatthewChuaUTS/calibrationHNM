@@ -78,7 +78,7 @@ originalImage = imread('C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrati
 [mrows, ncols, ~] = size(originalImage);
 
 % Generate world coordinates for the planar pattern keypoints
-squareSize = 35;  % in units of 'millimeters'
+squareSize = 13;  % in units of 'millimeters'
 worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize, 'boardSize', [5 5]);
 worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
 
@@ -106,7 +106,7 @@ undistortedImage = undistortImage(originalImage, cameraParams);
 % showdemo('MeasuringPlanarObjectsExample')
 % showdemo('StructureFromMotionExample')
 
-numImages = 5; % Number of images taken by the moving camera
+numImages = length(imageFileNames); % Number of images taken by the moving camera
 movingCameraPoses = cell(1, numImages); % Preallocate a cell array
 
 for i = 1:numImages
