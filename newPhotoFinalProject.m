@@ -1,4 +1,4 @@
-function T_CE = newPhotoFinalProject(cam)
+function [T_CE, cameraParams] = newPhotoFinalProject(cam)
     
 fixedRobotPoses = [0.1958   -0.0144    0.1640
     0.1932   -0.0362    0.1645
@@ -22,7 +22,7 @@ fixedRobotOrientatons = [-0.0735         0         0
    -0.0859         0         0];
 
 % Initialise Webcam
-% cam = webcam;
+ cam = webcam;
 
 % Specify the path for saving images
 save_path = 'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\';

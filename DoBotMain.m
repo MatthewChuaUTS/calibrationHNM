@@ -25,7 +25,7 @@
 % InitialiseDobot();
 % input("press enter once finished calibrating");
 cam = webcam;  % Connect to the default webcam
-t_ce = newPhotoFinalProject(cam); %idk what I'm not actually passing out so yeah lol.
+[t_ce, cameraParams] = newPhotoFinalProject(cam); %idk what I'm not actually passing out so yeah lol.
 disp("TCE");
 disp(t_ce);
 basePosImg = GetBasePos(cam);
@@ -33,5 +33,5 @@ basePosImg = GetBasePos(cam);
 disp('done, will pause for a sec');
 pause(1);
 % virtual estop function -> WAIT_NO_NO_NO_STOP_THE_ROBOT();
-VisualServoing_NathanRevision(cam, basePosImg, t_ce);
+mattsVisualServoing(cam, basePosImg, t_ce, cameraParams);
 
