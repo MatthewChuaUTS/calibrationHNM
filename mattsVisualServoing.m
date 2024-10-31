@@ -19,7 +19,7 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
     focalLength = cameraParams.Intrinsics.FocalLength
     
     % Define the size of each checkerboard square in millimeters
-    squareSize = 13;  % Checkerboard square size in mm
+    squareSize = 0.013;  % Checkerboard square size in mm
     
     % Detect the reference (desired) checkerboard points
     basePosImg = rgb2gray(basePosImg);
