@@ -8,7 +8,7 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
     
     % Define the control gain and time step
     Lambda = 0.18;
-    dt = 1;         % Time step (seconds)
+    dt = 0.1;         % Time step (seconds)
     tolerance = 1e-3; % Error tolerance
     
     % Camera intrinsic parameters
@@ -41,6 +41,7 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         % end
         % 
         % Normalize the matched feature coordinates
+
         xy = (desiredPoints - principalPoint) ./ focalLength;
         Obsxy = (currentPoints - principalPoint) ./ focalLength;
         
@@ -82,7 +83,7 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         disp(T_delta);
         
         % Compute new pose
-        T_new = T_current * T_delta * T_camera_endeffector; %* T_camera_endeffector 
+        T_new = T_current * T_delta; %* T_camera_endeffector 
         newPosition = T_new(1:3, 4)'; 
         newRotationMatrix = T_new(1:3, 1:3);
         newEulerAngles = rotm2eul(newRotationMatrix, 'XYZ');
