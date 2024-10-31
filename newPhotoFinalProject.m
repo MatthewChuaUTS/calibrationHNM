@@ -9,7 +9,7 @@ fixedRobotPoses = [0.1958   -0.0144    0.1640
     0.1991   -0.0071    0.1434
     0.1969   -0.0318    0.1358
     0.1914   -0.0560    0.1338
-    0.1984   -0.0171    0.1470]
+    0.1984   -0.0171    0.1470];
 fixedRobotOrientatons = [-0.0735         0         0
    -0.1853         0         0
    -0.3479         0         0
@@ -19,13 +19,13 @@ fixedRobotOrientatons = [-0.0735         0         0
    -0.0356         0         0
    -0.1603         0         0
    -0.2846         0         0
-   -0.0859         0         0]
+   -0.0859         0         0];
 
 % Initialise Webcam
 % cam = webcam;
 
 % Specify the path for saving images
-save_path = 'C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM\';
+save_path = 'C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM\';
 
 % Check if save_path exists
 if ~isfolder(save_path)
@@ -75,14 +75,16 @@ detector = vision.calibration.monocular.CheckerboardDetector();
 imageFileNames = imageFileNames(imagesUsed);
 
 % Read the first image to obtain image size
-originalImage = imread('C:\Users\harrs\OneDrive - UTS\Documents\GitHub\calibrationHNM/image1.png');
+originalImage = imread('C:\Users\mattk\OneDrive - UTS\Uni\Year 2\SCMS\calibrationHNM/image1.png');
 [mrows, ncols, ~] = size(originalImage);
 
 % Generate world coordinates for the planar pattern keypoints
 squareSize = 13;  % in units of 'millimeters'
 worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize, 'boardSize', [5 5]);
 worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
-
+if size(imagePoints, 1) > size(worldPoints, 1)
+    imagePoints = imagePoints(1:size(worldPoints, 1), :);
+end
 
 % Calibrate the camera
 [cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints, ...
@@ -167,7 +169,7 @@ function result = helperEstimateHandEyeTransform(cameraPoses, robotPoses, calibr
     t = C \ d;
     
     % Create the transformation
-    T = [R, t; 0 0 0 1];
+    T = [R, t*0.001; 0 0 0 1];
     
     result.T = T;
 end

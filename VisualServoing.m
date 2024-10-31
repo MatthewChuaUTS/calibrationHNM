@@ -21,7 +21,7 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
     focalLength = [focalLengthPixels, focalLengthPixels];
     
     % Estimated depth of features (Z-coordinate)
-    Z = 1.2;
+    Z = 0.18; % Meters
     
     % Extract Desired Features
     % Detect SURF features in the reference image
@@ -91,18 +91,24 @@ function VisualServoing(cam, basePosImg, T_camera_endeffector)
         [currentPosition, currentEulerAngles] = getCurrentEndEffectorPose();
         currentRotationMatrix = eul2rotm(currentEulerAngles, 'XYZ');
         T_current = [currentRotationMatrix, currentPosition'; 0 0 0 1];
+        disp('TC')
+        disp(T_current);
         
         % Compute incremental transformation
         delta_translation = delta_Xc(1:3);
         deltaEulerAngles = delta_Xc(4:6)';
         delta_rotation_matrix = eul2rotm(deltaEulerAngles, 'XYZ');
         T_delta = [delta_rotation_matrix, delta_translation; 0 0 0 1];
+        disp('delta');
+        disp(T_delta);
         
         % Compute new pose
         T_new = T_current * T_delta; % * T_camera_endeffector *0.01
         newPosition = T_new(1:3, 4)';
         newRotationMatrix = T_new(1:3, 1:3);
         newEulerAngles = rotm2eul(newRotationMatrix, 'XYZ');
+        disp('tn');
+        disp(T_new);
         
         % Send New Pose to Robot
         sendTargetEndEffectorPose(newPosition, newEulerAngles);
