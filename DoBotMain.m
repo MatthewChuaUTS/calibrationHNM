@@ -33,5 +33,5 @@ basePosImg = GetBasePos(cam);
 disp('done, will pause for a sec');
 pause(1);
 % virtual estop function -> WAIT_NO_NO_NO_STOP_THE_ROBOT();
-mattsVisualServoing(cam, basePosImg, t_ce, cameraParams);
+HarrshaVisualServoing(cam, basePosImg, t_ce, cameraParams);
 
