@@ -78,7 +78,7 @@ function [T_CE, cameraParams] = newPhotoFinalProject(cam)
     [mrows, ncols, ~] = size(originalImage);
     
     % Generate world coordinates for the planar pattern keypoints
-    squareSize = 13;  % in units of 'millimeters'
+    squareSize = 0.013;  % in units of 'millimeters'
     worldPoints = generateWorldPoints(detector, 'SquareSize', squareSize, 'boardSize', [5 8]);
     worldPoints3D = [worldPoints, zeros(size(worldPoints, 1), 1)];
     if size(imagePoints, 1) > size(worldPoints, 1)
@@ -88,7 +88,7 @@ function [T_CE, cameraParams] = newPhotoFinalProject(cam)
     % Calibrate the camera
     [cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints, ...
         'EstimateSkew', false, 'EstimateTangentialDistortion', false, ...
-        'NumRadialDistortionCoefficients', 3, 'WorldUnits', 'millimeters', ...
+        'NumRadialDistortionCoefficients', 3, 'WorldUnits', 'meters', ...
         'InitialIntrinsicMatrix', [], 'InitialRadialDistortion', [], ...
         'ImageSize', [mrows, ncols]);
     
@@ -168,7 +168,7 @@ function [T_CE, cameraParams] = newPhotoFinalProject(cam)
         t = C \ d;
         
         % Create the transformation
-        T = [R, t*0.001; 0 0 0 1];
+        T = [R, t*0.1; 0 0 0 1];
         
         result.T = T;
     end

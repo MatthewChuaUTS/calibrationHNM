@@ -31,12 +31,9 @@ disp(t_ce);
 disp('reproj errors');
 disp(cameraParams.ReprojectionErrors);
 basePosImg = GetBasePos(cam);
-% input('ensure the command window has the safety stop function ready, then press enter');
+input('ensure the command window has the safety stop function ready, then press enter');
 disp('done, will pause for a sec');
 pause(1);
-T_base_world = eye(4);
 
-% mattsVisualServoing(cam, basePosImg, t_ce, cameraParams);
-Controller_Part2(cam, t_ce, T_base_world, cameraParams);
-% Controller_Part2(cam, T_camera_endeffector, T_base_world, cameraParams)
+mattsVisualServoing(cam, basePosImg, t_ce, cameraParams);
 
