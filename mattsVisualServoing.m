@@ -59,17 +59,19 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         Obsxy = (currentPoints - principalPoint) ./ focalLength;
         
         % Number of feature points
-        n = size(desiredPoints, 1);
+        % Number of feature points
+        n = 1; % Using only one point
+        
         % Interaction matrix for translational DoF only
         Lx = zeros(2*n, 3);
         
         for i = 1:n
-            Lxi = FuncLx(Obsxy(i, 1), Obsxy(i, 2), Z(i), Lambda);
+            Lxi = FuncLx(Obsxy(i, 1), Obsxy(i, 2), Z(i));
             Lx(2*i-1:2*i, :) = Lxi;
         end
         
         % Compute the error
-        e = reshape((Obsxy - xy)', [], 1);
+        e = reshape((Obsxy(i, :) - xy(i, :))', [], 1); % e is 2 x 1
         
         % Compute error norm
         errorNorm = norm(e);
@@ -78,7 +80,7 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         % Termination condition
         if errorNorm < tolerance
             disp('Target position reached within tolerance.');
-            % break;
+            break;
         end
         
         % Set a minimum error threshold
@@ -89,10 +91,10 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         else
             % Damped least squares inverse of Lx
             lambda_dls = 0.01; % Damping factor
-            Lx_pseudo_inv = Lx' * inv(Lx * Lx' + lambda_dls^2 * eye(size(Lx,1)));
-        
+            Lx_pseudo_inv = Lx' * inv(Lx * Lx' + lambda_dls^2 * eye(2*n));
+            
             % Compute control law (translational velocities only)
-            Vc_translational = -Lambda * Lx_pseudo_inv * e;
+            Vc_translational = -Lambda * Lx_pseudo_inv * e; % Vc_translational is 3 x 1
         end
         
         % Display Vc_translational
@@ -101,6 +103,7 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         
         % Integrate translational velocities to get displacement
         delta_Xc = Vc_translational * dt;
+        delta_Xc = delta_Xc(:); % Ensure it's a column vector
         disp('delta_Xc:');
         disp(delta_Xc);
         
@@ -109,13 +112,13 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         delta_Xc = max(-max_displacement, min(max_displacement, delta_Xc));
         
         % Transform delta_Xc from camera frame to end-effector frame
-        delta_Xe = T_camera_endeffector(1:3,1:3) * delta_Xc;
+        delta_Xe = T_camera_endeffector(1:3,1:3) * delta_Xc; % delta_Xe is 3 x 1
         
         % Since rotation is not possible, set rotational increments to zero
         delta_Omega_e = zeros(3,1);
         
         % Combine translational and rotational increments
-        delta_Xe_full = [delta_Xe; delta_Omega_e];
+        delta_Xe_full = [delta_Xe; delta_Omega_e]; % delta_Xe_full is 6 x 1
         
         % Display delta_Xe_full
         disp('delta_Xe_full:');
@@ -140,5 +143,4 @@ function mattsVisualServoing(cam, basePosImg, T_camera_endeffector, cameraParams
         
         % Wait for Next Iteration
         pause(dt);
-
 end
